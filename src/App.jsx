@@ -37,7 +37,8 @@ import {
 import { DashboardPage } from "./DashboardPage.jsx";
 
 const HERO_VIDEO_ID = "U2fPBxi1W_M";
-const HERO_VIDEO_BACKGROUND = `https://www.youtube-nocookie.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${HERO_VIDEO_ID}&controls=0&playsinline=1&rel=0&modestbranding=1`;
+const YOUTUBE_EMBED_ORIGIN = encodeURIComponent(window.location.origin);
+const HERO_VIDEO_BACKGROUND = `https://www.youtube-nocookie.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${HERO_VIDEO_ID}&controls=0&playsinline=1&rel=0&modestbranding=1&origin=${YOUTUBE_EMBED_ORIGIN}`;
 const QA_STATIC_CAPTURE = new URLSearchParams(window.location.search).get("capture") === "1";
 
 const navItems = [
@@ -375,14 +376,14 @@ const mediaItems = [
     title: "方舟太魯閣・絕境新機 4K",
     subtitle: "在地震與風雨之後，看見土地再生的力量",
     source: "太魯閣國家公園",
-    duration: "03:47",
+    duration: "06:13",
   },
   {
     id: "as-Vwa1D2wY",
     title: "方舟太魯閣・以太魯閣為名 4K",
     subtitle: "從山海尺度重新認識花蓮與太魯閣",
     source: "太魯閣國家公園",
-    duration: "04:16",
+    duration: "04:44",
   },
 ];
 
@@ -515,7 +516,7 @@ function Hero() {
   }, []);
 
   return <section className="hero" id="home">
-    <div className="hero-media" aria-hidden="true"><img className="hero-poster" src="./assets/a-hall-mural.jpg" alt="" />{!QA_STATIC_CAPTURE && <iframe src={HERO_VIDEO_BACKGROUND} title="太魯閣國家公園天成方舟 4K 背景影片" allow="autoplay; encrypted-media; picture-in-picture" tabIndex="-1" />}</div>
+    <div className="hero-media" aria-hidden="true"><img className="hero-poster" src="./assets/a-hall-mural.jpg" alt="" />{!QA_STATIC_CAPTURE && <iframe src={HERO_VIDEO_BACKGROUND} title="太魯閣國家公園天成方舟 4K 背景影片" allow="autoplay; encrypted-media; picture-in-picture" referrerPolicy="strict-origin-when-cross-origin" tabIndex="-1" />}</div>
     <div className="hero-shade" />
     <div className={`hero-content ${showIntro ? "intro-active" : ""}`}><h1>花蓮正在盛開，<br /><span>大山大海一起向前。</span></h1><p className="hero-lead">從災後重生的力量出發，在山海、城市與人的故事裡，看見花蓮持續向前。</p></div>
     <div className={`hero-intro ${showIntro ? "show" : "hide"}`} aria-hidden={!showIntro}>
@@ -540,9 +541,9 @@ function LatestNews({ onNews }) {
 function MediaSection({ onOpenVideo }) {
   const [selectedId, setSelectedId] = useState(mediaItems[0].id);
   const selected = mediaItems.find(item => item.id === selectedId) ?? mediaItems[0];
-  const player = `https://www.youtube-nocookie.com/embed/${selected.id}?controls=1&playsinline=1&rel=0`;
+  const player = `https://www.youtube-nocookie.com/embed/${selected.id}?controls=1&playsinline=1&rel=0&origin=${YOUTUBE_EMBED_ORIGIN}`;
 
-  return <section className="media-section" id="media"><div className="media-heading"><span className="media-symbol"><FilmSlate weight="duotone" /></span><div><p className="eyebrow">SEE HUALIEN IN MOTION</p><h2>讓山海說話，<br />看見花蓮持續前進。</h2><p>用真實地景與人的故事，為災後花蓮留下具有生命力的影像篇章。</p></div></div><div className="media-layout"><div className="media-player-wrap"><div className="media-player">{QA_STATIC_CAPTURE ? <img className="media-capture-poster" src={`https://i.ytimg.com/vi/${selected.id}/maxresdefault.jpg`} alt={`${selected.title}影片預覽`} loading="lazy" /> : <iframe key={selected.id} src={player} title={`${selected.title} 播放器`} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen loading="lazy" />}</div><div className="media-caption"><div><small>4K 來源・{selected.source}</small><strong>{selected.title}</strong><p>{selected.subtitle}</p></div><button className="secondary-cta" onClick={() => onOpenVideo(selected)}><Play weight="fill" />開啟完整播放器</button></div></div><div className="media-playlist">{mediaItems.map((item, index) => <button key={item.id} className={selected.id === item.id ? "active" : ""} aria-pressed={selected.id === item.id} onClick={() => setSelectedId(item.id)}><span className="media-thumb"><img src={`https://i.ytimg.com/vi/${item.id}/hqdefault.jpg`} alt="" loading="lazy" /><i><Play weight="fill" /></i></span><span><small>0{index + 1} · {item.duration}</small><strong>{item.title}</strong><span className="media-summary">{item.subtitle}</span></span></button>)}</div></div><p className="media-rights">影片以官方 YouTube 嵌入作為提案展示；正式上線、下載、剪輯或重製仍須取得權利人書面授權。播放器使用自適應串流，畫質依裝置與網路決定。</p></section>;
+  return <section className="media-section" id="media"><div className="media-heading"><span className="media-symbol"><FilmSlate weight="duotone" /></span><div><p className="eyebrow">SEE HUALIEN IN MOTION</p><h2>讓山海說話，<br />看見花蓮持續前進。</h2><p>用真實地景與人的故事，為災後花蓮留下具有生命力的影像篇章。</p></div></div><div className="media-layout"><div className="media-player-wrap"><div className="media-player">{QA_STATIC_CAPTURE ? <img className="media-capture-poster" src={`https://i.ytimg.com/vi/${selected.id}/maxresdefault.jpg`} alt={`${selected.title}影片預覽`} loading="lazy" /> : <iframe key={selected.id} src={player} title={`${selected.title} 播放器`} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen loading="lazy" />}</div><div className="media-caption"><div><small>4K 來源・{selected.source}</small><strong>{selected.title}</strong><p>{selected.subtitle}</p></div><button className="secondary-cta" onClick={() => onOpenVideo(selected)}><Play weight="fill" />開啟完整播放器</button></div></div><div className="media-playlist">{mediaItems.map((item, index) => <button key={item.id} className={selected.id === item.id ? "active" : ""} aria-pressed={selected.id === item.id} onClick={() => setSelectedId(item.id)}><span className="media-thumb"><img src={`https://i.ytimg.com/vi/${item.id}/hqdefault.jpg`} alt="" loading="lazy" /><i><Play weight="fill" /></i></span><span><small>0{index + 1} · {item.duration}</small><strong>{item.title}</strong><span className="media-summary">{item.subtitle}</span></span></button>)}</div></div><p className="media-rights">影片以官方 YouTube 嵌入作為提案展示；正式上線、下載、剪輯或重製仍須取得權利人書面授權。播放器使用自適應串流，畫質依裝置與網路決定。</p></section>;
 }
 
 function QuickJourney({ onNavigate }) {
@@ -992,8 +993,8 @@ function ModalShell({ label, onClose, children, wide = false, modalClassName = "
 }
 
 function VideoModal({ video = mediaItems[0], onClose }) {
-  const player = `https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&mute=0&controls=1&playsinline=1&rel=0`;
-  return <ModalShell label="花蓮 4K 影片" onClose={onClose} wide><div className="video-modal-copy"><small>OFFICIAL 4K SOURCE</small><h2>{video.title}｜{video.source}</h2><p>{video.subtitle}。實際播放畫質由 YouTube 依裝置與網路自動調整。</p></div><div className="video-player"><iframe src={player} title={`${video.title} 完整影片`} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen /></div><a className="source-link" href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noreferrer">在 YouTube 開啟官方影片 <ArrowRight /></a></ModalShell>;
+  const player = `https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&mute=0&controls=1&playsinline=1&rel=0&origin=${YOUTUBE_EMBED_ORIGIN}`;
+  return <ModalShell label="花蓮 4K 影片" onClose={onClose} wide><div className="video-modal-copy"><small>OFFICIAL 4K SOURCE</small><h2>{video.title}｜{video.source}</h2><p>{video.subtitle}。實際播放畫質由 YouTube 依裝置與網路自動調整。</p></div><div className="video-player"><iframe src={player} title={`${video.title} 完整影片`} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen /></div><a className="source-link" href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noreferrer">在 YouTube 開啟官方影片 <ArrowRight /></a></ModalShell>;
 }
 
 function RouteModal({ zone, onClose, onArrive }) {
