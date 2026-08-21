@@ -1,0 +1,25 @@
+.DS_Store
+node_modules/
+dist/
+qa/
+qa-*
+*.log
+*.docx
+*.pdf
+.env*
+!.env.example
+*.pem
+*.key
+*.pyc
+scripts/*.py
+scripts/__pycache__/
+
+# Local planning and review materials
+AGENTS.md
+design-qa.md
+.npmrc
+
+# Prototype assets that are not used by the published site
+public/assets/exhibition-concept.jpg
+public/assets/selected-home-visual.png
+public/assets/site-map.jpg
